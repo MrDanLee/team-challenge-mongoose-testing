@@ -54,6 +54,19 @@ const postController = {
       res.status(500).json("Error")
     }
   }, 
+  getPostsWithPagination: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = 10;
+      const skip = (page - 1) * limit;
+      const posts = await Post.find().skip(skip).limit(limit);
+      const total = await Post.countDocuments();
+      res.json({ posts, page, totalPages: Math.ceil(total / limit), total });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Error");
+    }
+  },
   deletePost: async (req, res) => {
     try {
       const _id = req.params._id;

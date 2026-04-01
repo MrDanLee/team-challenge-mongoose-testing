@@ -94,6 +94,52 @@ describe("GET /api/post/title/:title", () => {
   });
 });
 
+describe("GET /api/post/postsWithPagination", () => {
+  beforeEach(async () => {
+    // Crear 15 posts para probar paginación
+    const posts = [];
+    for (let i = 1; i <= 15; i++) {
+      posts.push({ title: `Post ${i}`, body: `Body ${i}` });
+    }
+    await Post.insertMany(posts);
+  });
+
+  test("should return first 10 posts on page 1", async () => {
+    const res = await request(app).get("/api/post/postsWithPagination?page=1");
+
+    expect(res.status).toBe(200);
+    expect(res.body.posts).toHaveLength(10);
+    expect(res.body.page).toBe(1);
+    expect(res.body.totalPages).toBe(2);
+    expect(res.body.total).toBe(15);
+  });
+
+  test("should return remaining 5 posts on page 2", async () => {
+    const res = await request(app).get("/api/post/postsWithPagination?page=2");
+
+    expect(res.status).toBe(200);
+    expect(res.body.posts).toHaveLength(5);
+    expect(res.body.page).toBe(2);
+    expect(res.body.totalPages).toBe(2);
+  });
+
+  test("should default to page 1 when no page param", async () => {
+    const res = await request(app).get("/api/post/postsWithPagination");
+
+    expect(res.status).toBe(200);
+    expect(res.body.posts).toHaveLength(10);
+    expect(res.body.page).toBe(1);
+  });
+
+  test("should return empty array for page beyond total", async () => {
+    const res = await request(app).get("/api/post/postsWithPagination?page=5");
+
+    expect(res.status).toBe(200);
+    expect(res.body.posts).toHaveLength(0);
+    expect(res.body.page).toBe(5);
+  });
+});
+
 describe("PUT /api/post/id/:_id", () => {
   test("should update a post by id", async () => {
     const post = await Post.create({ title: "Old title", body: "Old body" });

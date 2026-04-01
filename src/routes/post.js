@@ -9,6 +9,8 @@ router.get("/id/:_id", postController.getPostById);
 
 router.get("/title/:title", postController.getPostByTitle);
 
+router.get("/postsWithPagination", postController.getPostsWithPagination);
+
 router.put("/id/:_id", postController.updatePostById);
 
 router.delete("/id/:_id", postController.deletePost);
