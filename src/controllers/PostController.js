@@ -47,6 +47,7 @@ const postController = {
       const newContent = req.body.body;
       post.title = newTitle;
       post.body = newContent;
+      await post.save();
       res.json(post);
     } catch (error) {
       console.error(error)
