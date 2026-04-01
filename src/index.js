@@ -11,6 +11,10 @@ const APP_PORT = process.env.APP_PORT || 3000;
 app.use(express.json());
 app.use("/api", router);
 
-app.listen(APP_PORT, () => {
-  console.log(`Server running on http://localhost:${APP_PORT}`)
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(APP_PORT, () => {
+    console.log(`Server running on http://localhost:${APP_PORT}`)
+  });
+}
+
+module.exports = app;
